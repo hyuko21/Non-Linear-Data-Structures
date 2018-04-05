@@ -13,7 +13,7 @@ public class RBTree extends BSTree implements RBTreeInterface {
 		return (RBNode) root;
 	}
 	public boolean isEmpty() {
-		return size > 0;
+		return size == 0;
 	}
 	private void leftRotation(RBNode v) {
   	// pai (nó desbalanceado)
@@ -244,11 +244,9 @@ public class RBTree extends BSTree implements RBTreeInterface {
 		
 		if (leftChild != null) {
 			leftChild.setParent(parent);
-			leftChild.setColor(v.getColor());
 			return leftChild;
 		} else {
 			rightChild.setParent(parent);
-			rightChild.setColor(v.getColor());
 			return rightChild;
 		}
 	}
@@ -289,13 +287,15 @@ public class RBTree extends BSTree implements RBTreeInterface {
       
       // Não tem filhos
       if (isExternal(v)) {
-        if (nk < key(parent)) {
-          if (v.getColor() == BLACK) rebalance(parent, -1);
-          parent.setLeftChild(null);
-        } else {
-        	if (v.getColor() == BLACK) rebalance(parent, 1);
-          parent.setRightChild(null);
-        }
+      	if (parent != null) {
+	        if (nk < key(parent)) {
+	          if (v.getColor() == BLACK) rebalance(parent, -1);
+	          parent.setLeftChild(null);
+	        } else {
+	        	if (v.getColor() == BLACK) rebalance(parent, 1);
+	          parent.setRightChild(null);
+	        }
+      	}
         
         o = v.element();
           
@@ -305,14 +305,15 @@ public class RBTree extends BSTree implements RBTreeInterface {
 				
 				// atualiza referências/cor retornando o sucessor
       	RBNode w = setRefsAndRecolor(v);
-      	
         if (nk < key(parent)) {// filho à remoção está na esquerda
         	parent.setLeftChild(w);
-        	if (w.getColor() == BLACK) rebalance(v, -1);
+        	if (w.getColor() == BLACK) rebalance(parent, -1);
         } else { // filho à remoção está na direita
         	parent.setRightChild(w);
-        	if (w.getColor() == BLACK) rebalance(v, 1);
+        	if (w.getColor() == BLACK) rebalance(parent, 1);
         }
+      	
+      	w.setColor(v.getColor());
       	
         v.setLeftChild(null);
         v.setRightChild(null);
@@ -340,28 +341,36 @@ public class RBTree extends BSTree implements RBTreeInterface {
   }
   public void showTree() {
     RBNode[][] t = new RBNode[height(root) + 1][size];
-    setPositions(t);
-    for (int j = 0; j < t.length; ++j) {
-      for (int i = 0; i < t[j].length; ++i) {
-        System.out.print(" ");
-        System.out.print(t[j][i] != null ? (t[j][i].getColor() == RED ? "R" : "B") : " ");
-      }
-      System.out.println();
+    if (!isEmpty()) {
+	    setPositions(t);
+	    for (int j = 0; j < t.length; ++j) {
+	      for (int i = 0; i < t[j].length; ++i) {
+	        System.out.print(" ");
+	        System.out.print(t[j][i] != null ? (t[j][i].getColor() == RED ? "R" : "B") : " ");
+	      }
+	      System.out.println();
+	    }
+	    System.out.println();
+    } else {
+    	System.out.println("Tree is empty\n");
     }
-    System.out.println();
   }
   
   /* only for debug purpose */
   public void showTreeWithKeys() {
     RBNode[][] t = new RBNode[height(root) + 1][size];
-    setPositions(t);
-    for (int j = 0; j < t.length; ++j) {
-      for (int i = 0; i < t[j].length; ++i) {
-        System.out.print(" ");
-        System.out.print(t[j][i] != null ? (t[j][i].getColor() == RED ? t[j][i].key()+"-R" : t[j][i].key()+"-B") : " ");
-      }
-      System.out.println();
+    if (!isEmpty()) {
+	    setPositions(t);
+	    for (int j = 0; j < t.length; ++j) {
+	      for (int i = 0; i < t[j].length; ++i) {
+	        System.out.print(" ");
+	        System.out.print(t[j][i] != null ? (t[j][i].getColor() == RED ? t[j][i].key()+"-R\t" : t[j][i].key()+"-B\t") : "\t");
+	      }
+	      System.out.println();
+	    }
+	    System.out.println();
+    } else {
+    	System.out.println("Tree is empty\n");
     }
-    System.out.println();
   }
 }
