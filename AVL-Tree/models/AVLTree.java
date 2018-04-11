@@ -9,19 +9,19 @@ public class AVLTree extends BSTree implements AVLTreeInterface {
   	return size == 0;
   }
   private void rotbal(AVLNode v, int dir) { // balancear quando rotação
-  		AVLNode child;
-  		int childBF;
-	  	if (dir > 0) { // à direita
-	  		child = (AVLNode) v.leftChild();
-	  		childBF = child == null ? 0 : child.getBF();
-	  		v.setBF(v.getBF() - 1 - Math.max(childBF, 0));
-	  		if (child != null) child.setBF(child.getBF() - 1 + Math.min(v.getBF(), 0));
-	  	} else { // à esquerda
-	  		child = (AVLNode) v.rightChild();
-	  		childBF = child == null ? 0 : child.getBF();
-	  		v.setBF(v.getBF() + 1 - Math.min(childBF, 0));
-	  		if (child != null) child.setBF(child.getBF() + 1 + Math.max(v.getBF(), 0));
-	  	}
+		AVLNode child;
+		int childBF;
+		if (dir > 0) { // à direita
+			child = (AVLNode) v.leftChild();
+			childBF = child == null ? 0 : child.getBF();
+			v.setBF(v.getBF() - 1 - Math.max(childBF, 0));
+			if (child != null) child.setBF(child.getBF() - 1 + Math.min(v.getBF(), 0));
+		} else { // à esquerda
+			child = (AVLNode) v.rightChild();
+			childBF = child == null ? 0 : child.getBF();
+			v.setBF(v.getBF() + 1 - Math.min(childBF, 0));
+			if (child != null) child.setBF(child.getBF() + 1 + Math.max(v.getBF(), 0));
+		}
   }
   private void rotCheck(AVLNode v) { // verifica necessidade de rotacionar
   	int bf = v.getBF();
