@@ -1,5 +1,5 @@
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -9,12 +9,12 @@ import java.util.Iterator;
 public class SimpleGraph implements GraphInterface {
 	
 	private int vertexCount;
-	private Vector<Vertex> vertices;
+	private ArrayList<Vertex> vertices;
 	private Edge adjMatrix[][];
 	
 	public SimpleGraph() {
 		vertexCount = 0;
-		vertices = new Vector();
+		vertices = new ArrayList();
 	}
 	
 	public void insertVertex(Vertex v) {
@@ -117,7 +117,7 @@ public class SimpleGraph implements GraphInterface {
 		
 		for (int i = 0; i < vertexCount - 1; ++i)
 			System.out.print(vertices.get(i) + ", ");
-		System.out.println(vertices.lastElement());
+		System.out.println(vertices.get(vertexCount - 1));
 	}
 	
 	public void showMatrix() {
@@ -155,7 +155,7 @@ public class SimpleGraph implements GraphInterface {
 	}
 	
 	public Iterator incidentEdges(Vertex v) {
-		Vector<Edge> edges = new Vector();
+		ArrayList<Edge> edges = new ArrayList();
 		int index = vertices.indexOf(v);
 		
 		int i = (index == 0 ? 1 : 0);
@@ -166,7 +166,7 @@ public class SimpleGraph implements GraphInterface {
 	}
 	
 	public Iterator endVertices(Edge e) {
-		Vector<Vertex> vertices = new Vector();
+		ArrayList<Vertex> vertices = new ArrayList();
 		vertices.add(e.getV1());
 		vertices.add(e.getV2());
 		return vertices.iterator();
@@ -198,7 +198,7 @@ public class SimpleGraph implements GraphInterface {
 	}
 	
 	public Iterator edges() {
-		Vector<Edge> edges = new Vector();
+		ArrayList<Edge> edges = new ArrayList();
 		
 		for (int i = 0; i < vertexCount; ++i)
 			for (int j = 0; i < vertexCount; ++j)

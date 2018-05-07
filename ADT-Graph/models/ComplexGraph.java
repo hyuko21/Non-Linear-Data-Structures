@@ -1,5 +1,5 @@
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -9,19 +9,19 @@ import java.util.Iterator;
 public class ComplexGraph implements GraphInterface {
 	
 	private int vertexCount;
-	private Vector<Vertex> vertices;
-	private Edge adjMatrix[][];
+	private ArrayList<Vertex> vertices;
+	private ArrayList<Edge> adjMatrix[][];
 	
 	public ComplexGraph() {
 		vertexCount = 0;
-		vertices = new Vector();
+		vertices = new ArrayList();
 	}
 	
 	public void insertVertex(Vertex v) {
 		vertexCount++;
 		vertices.add(v);
 		
-		Edge newAdjMatrix[][] = new Edge[vertexCount][vertexCount];
+		ArrayList<Edge> newAdjMatrix[][] = new ArrayList[vertexCount][vertexCount];
 		
 		for (int i = 0; i < vertexCount - 1; ++i)
 			for (int j = 0; j < vertexCount - 1; ++j)
@@ -35,7 +35,7 @@ public class ComplexGraph implements GraphInterface {
 		int index = vertices.indexOf(v);
 		vertices.remove(index);
 		
-		Edge tempAdjMatrix[][] = new Edge[vertexCount][vertexCount];
+		ArrayList<Edge> tempAdjMatrix[][] = new ArrayList[vertexCount][vertexCount];
 		
 		int i = (index == 0 ? 1 : 0), ii = 0, jj;
 		for (; i < vertexCount + 1; i += (i + 1 == index ? 2 : 1), ++ii) {
@@ -56,9 +56,9 @@ public class ComplexGraph implements GraphInterface {
 		int i = vertices.indexOf(v1);
 		int j = vertices.indexOf(v2);
 		
-		Vector<Edge> edges = adjMatrix[i][j];
+		ArrayList<Edge> edges = adjMatrix[i][j];
 		if (edges == null) {
-			edges == new Vector();
+			edges = new ArrayList();
 		}
 		
 		edges.add(edge);
@@ -74,8 +74,8 @@ public class ComplexGraph implements GraphInterface {
 		int i = vertices.indexOf(v1);
 		int j = vertices.indexOf(v2);
 		
-		Vector<Edge> edges = adjMatrix[i][j];
-		if (edges == null) edges == new Vector();
+		ArrayList<Edge> edges = adjMatrix[i][j];
+		if (edges == null) edges = new ArrayList();
 		
 		edges.add(edge);
 		
@@ -104,7 +104,7 @@ public class ComplexGraph implements GraphInterface {
 		int i = vertices.indexOf(v1);
 		int j = vertices.indexOf(v2);
 		
-		if (adjMatrix[i][j] == null) adjMatrix[i][j] = new Vector();
+		if (adjMatrix[i][j] == null) adjMatrix[i][j] = new ArrayList();
 		
 		adjMatrix[i][j].add(edge);
 		
@@ -117,7 +117,7 @@ public class ComplexGraph implements GraphInterface {
 		int i = vertices.indexOf(v1);
 		int j = vertices.indexOf(v2);
 		
-		if (adjMatrix[i][j] == null) adjMatrix[i][j] = new Vector();
+		if (adjMatrix[i][j] == null) adjMatrix[i][j] = new ArrayList();
 		
 		adjMatrix[i][j].add(edge);
 		
@@ -142,7 +142,7 @@ public class ComplexGraph implements GraphInterface {
 		
 		for (int i = 0; i < vertexCount - 1; ++i)
 			System.out.print(vertices.get(i) + ", ");
-		System.out.println(vertices.lastElement());
+		System.out.println(vertices.get(vertexCount - 1));
 	}
 	
 	public void showMatrix() {
@@ -180,18 +180,18 @@ public class ComplexGraph implements GraphInterface {
 	}
 	
 	public Iterator incidentEdges(Vertex v) {
-		Vector<Edge> edges = new Vector();
+		ArrayList<Edge> edges = new ArrayList();
 		int index = vertices.indexOf(v);
 		
 		int i = (index == 0 ? 1 : 0);
 		for (; i < vertexCount; i += (i + 1 == index ? 2 : 1))
-			if (adjMatrix[i][index] != null) edges.add(adjMatrix[i][index]);
+			if (adjMatrix[i][index] != null) for (Edge e: adjMatrix[i][index]) edges.add(e);
 		
 		return edges.iterator();
 	}
 	
 	public Iterator endVertices(Edge e) {
-		Vector<Vertex> vertices = new Vector();
+		ArrayList<Vertex> vertices = new ArrayList();
 		vertices.add(e.getV1());
 		vertices.add(e.getV2());
 		return vertices.iterator();
@@ -213,7 +213,7 @@ public class ComplexGraph implements GraphInterface {
 	public Edge getEdge(Vertex v1, Vertex v2) {
 		int i = vertices.indexOf(v1);
 		int j = vertices.indexOf(v2);
-		return adjMatrix[i][j];
+		return adjMatrix[i][j].get(0);
 	}
 	/** Graph state methods -- END */
 	
@@ -223,11 +223,11 @@ public class ComplexGraph implements GraphInterface {
 	}
 	
 	public Iterator edges() {
-		Vector<Edge> edges = new Vector();
+		ArrayList<Edge> edges = new ArrayList();
 		
 		for (int i = 0; i < vertexCount; ++i)
 			for (int j = 0; i < vertexCount; ++j)
-				edges.add(adjMatrix[i][j]);
+				if (adjMatrix[i][j] != null) for (Edge e: adjMatrix[i][j]) edges.add(e);
 		
 		return edges.iterator();
 	}
