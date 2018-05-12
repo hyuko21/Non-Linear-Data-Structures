@@ -210,10 +210,10 @@ public class ComplexGraph implements GraphInterface {
 		return adjMatrix[i][j] != null;
 	}
 	
-	public Edge getEdge(Vertex v1, Vertex v2) {
+	public Iterator getEdge(Vertex v1, Vertex v2) {
 		int i = vertices.indexOf(v1);
 		int j = vertices.indexOf(v2);
-		return adjMatrix[i][j].get(0);
+		return adjMatrix[i][j].iterator();
 	}
 	/** Graph state methods -- END */
 	

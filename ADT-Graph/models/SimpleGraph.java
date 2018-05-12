@@ -185,11 +185,22 @@ public class SimpleGraph implements GraphInterface {
 		return adjMatrix[i][j] != null;
 	}
 	
+	public String isEuclidean() {
+		int odds = 0;
+		
+		for (Iterator it = vertices.iterator(); it.hasNext() && odds < 3;)
+			if (degree((Vertex) it.next()) % 2 != 0) odds++;
+			
+		return odds < 3 ? "HAS A PATH" : "YOU SHALL NOT PASS";
+	}
+	
+	// goodman todo
+	
 	public Edge getEdge(Vertex v1, Vertex v2) {
 		int i = vertices.indexOf(v1);
 		int j = vertices.indexOf(v2);
 		return adjMatrix[i][j];
-	} 
+	}
 	/** Graph state methods -- END */
 	
 	/** Graph global info methods -- BEGIN */
