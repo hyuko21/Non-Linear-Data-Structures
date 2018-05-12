@@ -191,7 +191,7 @@ public class SimpleGraph implements GraphInterface {
 		for (Iterator it = vertices.iterator(); it.hasNext() && odds < 3;)
 			if (degree((Vertex) it.next()) % 2 != 0) odds++;
 			
-		return odds < 3 ? true : false;
+		return odds < 3;
 	}
 	
 	// goodman todo
