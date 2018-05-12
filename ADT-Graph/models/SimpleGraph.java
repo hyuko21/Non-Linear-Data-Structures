@@ -185,13 +185,13 @@ public class SimpleGraph implements GraphInterface {
 		return adjMatrix[i][j] != null;
 	}
 	
-	public String isEuclidean() {
+	public boolean isEuclidean() {
 		int odds = 0;
 		
 		for (Iterator it = vertices.iterator(); it.hasNext() && odds < 3;)
 			if (degree((Vertex) it.next()) % 2 != 0) odds++;
 			
-		return odds < 3 ? "HAS A PATH" : "YOU SHALL NOT PASS";
+		return odds < 3 ? true : false;
 	}
 	
 	// goodman todo
