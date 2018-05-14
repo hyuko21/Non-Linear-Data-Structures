@@ -186,6 +186,8 @@ public class SimpleGraph implements GraphInterface {
 	}
 	
 	public boolean isEuclidean() {
+		if (countConvexGraphs() != 1) return false;
+		
 		int odds = 0;
 		
 		for (Iterator it = vertices.iterator(); it.hasNext() && odds < 3;)
@@ -194,7 +196,35 @@ public class SimpleGraph implements GraphInterface {
 		return odds < 3;
 	}
 	
-	// goodman todo
+	public int countConvexGraphs() {
+		int convexCount = 0; // convex graphs counter
+		
+		if (!edges().hasNext()) return convexCount; // if there is no edge(s) return 0
+		
+		ArrayList<Vertex> verticesCopy = new ArrayList(vertices); // gets a shallow copy of vertices
+		ArrayList<Vertex> fusedVertices; // declared fused vertices array
+		
+		// while still there some vertices to check
+		while (!verticesCopy.isEmpty()) {
+			fusedVertices = new ArrayList(); // instanciate fused vertices
+			fusedVertices.add(verticesCopy.get(0)); // the first vertex of the vertices array will always be merged with some other vertex
+			
+			for (int i = 0; i < fusedVertices.size(); ++i) {
+				Vertex v0 = fusedVertices.get(i);
+				for (int j = 0; j < verticesCopy.size(); ++j) {
+					Vertex v = verticesCopy.get(j);
+					if (areAdjacent(v0, v)) {
+						fusedVertices.add(v);
+						verticesCopy.remove(v);
+						j--;
+					}
+				}
+				verticesCopy.remove(v0);
+			}
+			convexCount++;
+		}
+		return convexCount;
+	}
 	
 	public Edge getEdge(Vertex v1, Vertex v2) {
 		int i = vertices.indexOf(v1);
@@ -212,7 +242,7 @@ public class SimpleGraph implements GraphInterface {
 		ArrayList<Edge> edges = new ArrayList();
 		
 		for (int i = 0; i < vertexCount; ++i)
-			for (int j = 0; i < vertexCount; ++j)
+			for (int j = 0; j < vertexCount; ++j)
 				edges.add(adjMatrix[i][j]);
 		
 		return edges.iterator();
