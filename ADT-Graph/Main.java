@@ -37,7 +37,7 @@ class Main {
     
     graph.showMatrix();
     
-    System.out.println(graph.isEuclidean());
+    System.out.println(graph.isEulerian());
     
     System.out.println(graph.countConvexGraphs());
   }
