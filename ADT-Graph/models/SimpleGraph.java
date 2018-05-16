@@ -185,7 +185,7 @@ public class SimpleGraph implements GraphInterface {
 		return adjMatrix[i][j] != null;
 	}
 	
-	public boolean isEuclidean() {
+	public boolean isEulerian() {
 		if (countConvexGraphs() != 1) return false;
 		
 		int odds = 0;
@@ -207,7 +207,7 @@ public class SimpleGraph implements GraphInterface {
 		// while still there some vertices to check
 		while (!verticesCopy.isEmpty()) {
 			fusedVertices = new ArrayList(); // instanciate fused vertices
-			fusedVertices.add(verticesCopy.get(0)); // the first vertex of the vertices array will always be merged with some other vertex
+			fusedVertices.add(verticesCopy.remove(0)); // the first vertex of the vertices array will always be merged with some other vertex
 			
 			for (int i = 0; i < fusedVertices.size(); ++i) {
 				Vertex v0 = fusedVertices.get(i);
@@ -219,7 +219,6 @@ public class SimpleGraph implements GraphInterface {
 						j--;
 					}
 				}
-				verticesCopy.remove(v0);
 			}
 			convexCount++;
 		}
