@@ -3,7 +3,7 @@
  * made with ♥ by hyuko21
  */
  
-public class Edge implements EdgeInterface {
+public class Edge implements EdgeInterface, Comparable {
 	
 	private Vertex v1;
 	private Vertex v2;
@@ -48,5 +48,12 @@ public class Edge implements EdgeInterface {
 	
 	@Override
 	public String toString() { return "[" + value + "]"; }
+
+	public int compareTo(Object o) {
+		if (o == null) return 1;
+		else if (this.value < ((Edge) o).getValue()) return -1;
+		else if (this.value > ((Edge) o).getValue()) return 1;
+		return 0;
+	}
 	
 }
