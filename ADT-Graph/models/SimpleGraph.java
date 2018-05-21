@@ -335,14 +335,16 @@ public class SimpleGraph implements GraphInterface {
 			}
 		}
 
+		// to store the finded predecessor and skip others that do not matter for us
 		Vertex predecessor = null;
+		// go through all the values in distances matrix to build the array with the shortest path
 		for (int i = vertexCount - 1; i >= 0; --i) {
 			for (int j = vertexCount - 1; j >= 0; --j) {
-				if (distances[i][j] != null && (shortestPath.size() == 0 || distances[i][j].getV2() == predecessor)) {
+				if (distances[i][j] != null && (shortestPath.size() == 0 || distances[i][j].getV2() == predecessor)) { // save it in the shortest path array, only if it is not null (obvious) and either array is empty or this is the predecessor we are looking for
 					System.out.println(distances[i][j].getV1() + " " + distances[i][j].getV2());
 					shortestPath.add(0, distances[i][j].getV2());
-					predecessor = distances[i][j].getV1();
-					break;
+					predecessor = distances[i][j].getV1(); // updates the predecessor vertex
+					break; // breaks to improve performance (50%)
 				}
 			}
 		}
