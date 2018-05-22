@@ -127,8 +127,8 @@ public class Maze {
 
 	public void vertices() {
 		Vertex v;
-		int c = 0, size = vertices.size();
-		for (int i = 0; i < rows * cols; ++i) {
+		int c = 0, size = vertices.size(), max = rows * cols;
+		for (int i = 0; i < max; ++i) {
 			v = c < size ? vertices.get(c) : vertices.get(c - 1);
 			if ((i + 1) != v.getKey()) System.out.print("[  ]\t");
 			else {
