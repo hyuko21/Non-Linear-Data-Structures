@@ -49,8 +49,7 @@ class Main {
 		// System.out.println("shortest path finded: " + (shortPath.size() > 0 ? shortPath : "NO PATH FOUND!"));
 
 		Maze mazeRunner = new Maze(12, 10);
+		mazeRunner.vertices();
 		ArrayList<Vertex> paths[] = mazeRunner.findShortPath();
-
-		for (int i = 0; i < paths.length; ++i) System.out.println(paths[i]);
   }
 }

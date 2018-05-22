@@ -177,7 +177,17 @@ public class Maze {
 	}
 
 	public ArrayList<Vertex>[] findShortPath() {
-		return graph.findShortPathWithDijkstra(playerPos, exitVertices);
+		ArrayList<Vertex> paths[] = graph.findShortPathWithDijkstra(playerPos, exitVertices);
+
+		for (int i = 0; i < paths.length; ++i) {
+			if (!graph.areAdjacent(paths[i].get(0), paths[i].get(1)))
+				System.out.format("\npath %d: PATH NOT FOUND\n", i);
+			else {
+				System.out.format("\npath %d (cost: %d): %s\n", i, paths[i].size() - 1, paths[i]);
+			}
+		}
+
+		return paths;
 	}
 
 	public void showMatrix() {

@@ -333,8 +333,9 @@ public class SimpleGraph implements GraphInterface {
 			// }
 		}
 
-		ArrayList<Vertex> paths[] = new ArrayList[destinies.size()]; // to store the shortestsPaths found
+		ArrayList<Vertex> paths[] = new ArrayList[destinies.size()]; // to store the shortest paths found and its respective costs
 		ArrayList<Vertex> shortestPath; // queue to store the shortest path finded at the end of this algorithm. it will be returned from this method
+		Edge distance; // to store the current distance being evaluated
 
 		// retrieving the shortest(s) path(s) after algorithm ran
 		// getting the end points desired in destiny array
@@ -344,15 +345,17 @@ public class SimpleGraph implements GraphInterface {
 			// go through all the values in distances matrix to build the array with the shortest path
 			for (int j = vertexCount - 1; j >= 0; --j) {
 				for (int k = vertexCount - 1; k >= 0; --k) {
-					if (distances[j][k] != null && (distances[j][k].getV2() == predecessor)) { // save it in the shortest path array, only if it is not null (obvious) and either array is empty or this is the predecessor we are looking for
+					distance = distances[j][k];
+					if (distance != null && (distance.getV2() == predecessor)) { // save it in the shortest path array, only if it is not null (obvious) and either array is empty or this is the predecessor we are looking for
 						// System.out.println(distances[j][k].getV1() + " " + distances[j][k].getV2());
-						shortestPath.add(0, distances[j][k].getV2());
-						predecessor = distances[j][k].getV1(); // updates the predecessor vertex
+						shortestPath.add(0, predecessor);
+						predecessor = distance.getV1(); // updates the predecessor vertex
 						break;
 					}
 				}
 			}
-			paths[i] = shortestPath;
+			shortestPath.add(0, v0); // add the start position (v0) to the found path
+			paths[i] = shortestPath; // setting the path found
 		}
 
 		return paths;
