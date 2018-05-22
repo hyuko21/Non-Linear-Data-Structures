@@ -1,7 +1,6 @@
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * made with ♥ by hyuko21
@@ -155,7 +154,7 @@ public class SimpleGraph implements GraphInterface {
 		return vertexCount;
 	}
 	
-	public Iterator incidentEdges(Vertex v) {
+	public ArrayList<Edge> incidentEdges(Vertex v) {
 		ArrayList<Edge> edges = new ArrayList();
 		int index = vertices.indexOf(v);
 		
@@ -163,14 +162,14 @@ public class SimpleGraph implements GraphInterface {
 		for (; i < vertexCount; i += (i + 1 == index ? 2 : 1))
 			if (adjMatrix[i][index] != null) edges.add(adjMatrix[i][index]);
 		
-		return edges.iterator();
+		return edges;
 	}
 	
-	public Iterator endVertices(Edge e) {
+	public ArrayList<Vertex> endVertices(Edge e) {
 		ArrayList<Vertex> vertices = new ArrayList();
 		vertices.add(e.getV1());
 		vertices.add(e.getV2());
-		return vertices.iterator();
+		return vertices;
 	}
 	
 	public Vertex opposite(Vertex v, Edge e) throws OppositeException {
@@ -199,14 +198,14 @@ public class SimpleGraph implements GraphInterface {
 		
 		int odds = 0;
 		
-		for (Iterator it = vertices.iterator(); it.hasNext() && odds < 3;)
-			if (degree((Vertex) it.next()) % 2 != 0) odds++;
+		for (int i = 0; i < vertices.size() && odds < 3; ++i)
+			if (degree(vertices.get(i)) % 2 != 0) odds++;
 			
 		return odds < 3;
 	}
 	
 	public int countConvexGraphs() {
-		if (!edges().hasNext()) return vertexCount; // if there is no edge(s), return the number of vertices
+		if (edges().size() == 0) return vertexCount; // if there is no edge(s), return the number of vertices
 		
 		int convexCount = 0; // convex graphs counter
 		
@@ -238,83 +237,83 @@ public class SimpleGraph implements GraphInterface {
 	private Edge distance(Vertex v1, Vertex v2) {
 		if (v1 == v2) return new Edge(v1, v2, 0d); // distance between v0 to itself (== 0)
 		
-		Edge edge = getEdge(v1, v2); // are these vertices adjacent to each other
+		Edge edge = getEdge(v1, v2); // are these vertices adjacent to each other?
 
 		// if they are: return the edge value, otherwise, return infinity
 		return edge != null ? edge : new Edge(v1, v2, Double.MAX_VALUE);
 	}
 
-	// returns the vertex with miminum distance from a reference vertex
-	private Vertex vertexWithMinimumDist(Edge[][] distances, int index, int expectedSize) {
-		Edge distancesCopy[] = new Edge[expectedSize]; // declare copy array of distances array, to do not modify the original
+	// returns the edge with miminum distance (in distances array)
+	private Edge edgeWithMinimumDist(Edge[] distances) {
+		ArrayList<Edge> distancesCopy = new ArrayList(); // declare copy array of distances array, to do not modify the original
 		
-		// copy all not null values to distancesCopy array
-		// while counter of elements copied less than expectedSize
-		for (int i = 0, c = 0; c < expectedSize; ++i) if (distances[index][i] != null) {
-			distancesCopy[c] = distances[index][i]; // copy element to the counter position
-			++c; // increment counter of elements copied
-		}
+		// copy all not null and v0 distance reference
+		// (distance from v0 to itself (== 0)) values to distancesCopy array
+		for (int i = 0; i < distances.length; ++i)
+			if (distances[i] != null && distances[i].getValue() != 0d) {
+				distancesCopy.add(distances[i]);
+			}
 		
 		// sorts the array, to get the least distances value
-		Arrays.sort(distancesCopy);
+		Collections.sort(distancesCopy);
 
 		// gets the second element of the edges array and its destiny vertex (v2)
-		// obs.: the first element is the distance from reference vertex to itself (== 0)
-		return distancesCopy[0].getValue() == 0d ? distancesCopy[1].getV2() : distancesCopy[0].getV2();
+		return distancesCopy.get(0);
 	}
 
 	// returns the shortest path from a source to others vertices (smallest sum of edge(s) value(s))
-	public ArrayList<Vertex> findShortPathWithDijkstra() {
-		ArrayList<Vertex> shortestPath = new ArrayList(); // queue to store the shortest path finded at the end of this algorithm. it will be returned from this method
+	public ArrayList<Vertex>[] findShortPathWithDijkstra(Vertex v0, ArrayList<Vertex> destinies) {
+		ArrayList<Vertex> openSet = new ArrayList(vertices); // gets a shallow copy of vertices (to do not modify the original vertices array)
 		
-		ArrayList<Vertex> verticesCopy = new ArrayList(vertices); // gets a shallow copy of vertices (to do not modify the original vertices array)
-		
-		ArrayList<Vertex> cloudVertices = new ArrayList(); // declare a cloudVertices array (to store vertices that already have been visited)
+		ArrayList<Vertex> closedSet = new ArrayList(); // declare a closedSet array (to store vertices that already have been visited)
 
 		Edge distances[][] = new Edge[vertexCount][vertexCount]; // matrix to store distances between a reference vertex and another arbitrary one
 
-		cloudVertices.add(verticesCopy.remove(0)); // removing v0 from verticesCopy array and adding it to cloudVertices array (meaning: we already looked up for v0)
-
-		Vertex v0 = cloudVertices.get(0); // gets reference vertex (start position) v0
-		
 		int vertexIndex = vertices.indexOf(v0); // gets the index of the vertex in vertices array (to store the its distance in the right place ;)
 
-		distances[0][0] = distance(v0, v0); // stores the distance between reference vertex and itself
+		closedSet.add(openSet.remove(vertexIndex)); // removing v0 from openSet array and adding it to closedSet array (meaning: we already looked up for v0)
+		
+		distances[0][vertexIndex] = distance(v0, v0); // stores the distance between reference vertex and itself
 
 		Vertex v1; // the next vertex to look up in verticesCopy array
 		// go through all vertices in verticesCopy, skipping v0
-		for (int i = 0; i < verticesCopy.size(); ++i) {
-			v1 = verticesCopy.get(i); // get the next vertex
+		for (int i = 0; i < openSet.size(); ++i) {
+			v1 = openSet.get(i); // get the next vertex
 			// distance[1], distance[2], distance[3]...
-			// gets the distance between these 2 vertices (v0 and v (verticesCopy[i]))
+			// gets the distance between these 2 vertices (v0 and v (openSet[i]))
 			// and stores that in distances array, at the current index of this vertex in vertices array
 			vertexIndex = vertices.indexOf(v1);
-			distances[0][i + 1] = distance(v0, v1);
+			distances[0][vertexIndex] = distance(v0, v1);
 		}
 
-		int nElements = vertexCount; // the number of elements to look up in each distances matrix's row
 		// while still there some vertices to look up the distance
-		while (cloudVertices.size() < vertexCount) {
+		while (closedSet.size() < vertexCount) {
 			// row index to look up the least distance between that have been stored
 			// 1st: rowIndex = 0; 2nd: rowIndex = 1; 3rd: rowIndex = 2; and so on...
-			int rowIndex = cloudVertices.size() - 1;
+			int rowIndex = closedSet.size() - 1;
 			
 			// getting the least edge value from this current row in the matrix of distances
-			Vertex w = vertexWithMinimumDist(distances, rowIndex, nElements);
+			Edge minimumDist = edgeWithMinimumDist(distances[rowIndex]);
 			
-			cloudVertices.add(w); // adds to cloudVertices array (verticesCopy - cloudVertices)
-			verticesCopy.remove(w); // remove from verticesCopy array the current element to check the distances between
-			
-			for (Vertex v: verticesCopy) { // (verticesCopy - cloudVertices)
-				// gets the index of v in vertices (original) array
-				// since verticesCopy array have their elements being eliminated
-				int colIndex = vertices.indexOf(v);
+			Vertex w; // vertex with the minimum dist edge and not in closedSet
+			if (closedSet.contains(minimumDist.getV1()))
+				w = minimumDist.getV2();
+			else
+				w = minimumDist.getV1();
 
+			closedSet.add(w); // adds to cloudVertices array (openSet - closedSet)
+			openSet.remove(w); // remove from verticesCopy array the current element to check the distances between
+
+			for (Vertex v: openSet) { // (openSet - closedSet)
+				// gets the index of v in vertices (original) array
+				// since openSet array have their elements being eliminated
+				int colIndex = vertices.indexOf(v);
+				
 				// gets the distance between v's predecessor and the start position vertex (v0)
 				Edge predecessorDistance = distances[rowIndex][vertices.indexOf(w)];
 
 				Edge crrtDistance = distances[rowIndex][colIndex]; // current distance of from v0 to v
-
+				
 				// new distance of v plus distance of w, from v0
 				Edge newDistance = new Edge(w, v, predecessorDistance.getValue() + distance(w, v).getValue());
 				
@@ -325,49 +324,56 @@ public class SimpleGraph implements GraphInterface {
 					distances[rowIndex + 1][colIndex] = crrtDistance;
 				}
 			}
-			nElements = verticesCopy.size(); // update number of elements to look up
 
-			System.out.println();
-			for (int i = 0; i < distances.length; ++i) {
-				for (int j = 0; j < distances[i].length; ++j)
-					System.out.print(distances[i][j] + " ");
-				System.out.println();
-			}
+			// System.out.println();
+			// for (int i = 0; i < distances.length; ++i) {
+			// 	for (int j = 0; j < distances[i].length; ++j)
+			// 		System.out.print(distances[i][j] + " ");
+			// 	System.out.println();
+			// }
 		}
 
-		// to store the finded predecessor and skip others that do not matter for us
-		Vertex predecessor = null;
-		// go through all the values in distances matrix to build the array with the shortest path
-		for (int i = vertexCount - 1; i >= 0; --i) {
+		ArrayList<Vertex> paths[] = new ArrayList[destinies.size()]; // to store the shortestsPaths found
+		ArrayList<Vertex> shortestPath; // queue to store the shortest path finded at the end of this algorithm. it will be returned from this method
+
+		// retrieving the shortest(s) path(s) after algorithm ran
+		// getting the end points desired in destiny array
+		for (int i = 0; i < destinies.size(); ++i) {
+			shortestPath = new ArrayList(); // initialize/reset shortestPath array (to find another, if multiple end points was passed)
+			Vertex predecessor = destinies.get(i); // gets the first end point
+			// go through all the values in distances matrix to build the array with the shortest path
 			for (int j = vertexCount - 1; j >= 0; --j) {
-				if (distances[i][j] != null && (shortestPath.size() == 0 || distances[i][j].getV2() == predecessor)) { // save it in the shortest path array, only if it is not null (obvious) and either array is empty or this is the predecessor we are looking for
-					System.out.println(distances[i][j].getV1() + " " + distances[i][j].getV2());
-					shortestPath.add(0, distances[i][j].getV2());
-					predecessor = distances[i][j].getV1(); // updates the predecessor vertex
-					break; // breaks to improve performance (50%)
+				for (int k = vertexCount - 1; k >= 0; --k) {
+					if (distances[j][k] != null && (distances[j][k].getV2() == predecessor)) { // save it in the shortest path array, only if it is not null (obvious) and either array is empty or this is the predecessor we are looking for
+						// System.out.println(distances[j][k].getV1() + " " + distances[j][k].getV2());
+						shortestPath.add(0, distances[j][k].getV2());
+						predecessor = distances[j][k].getV1(); // updates the predecessor vertex
+						break;
+					}
 				}
 			}
+			paths[i] = shortestPath;
 		}
 
-		return shortestPath;
+		return paths;
 	}
 
 	public ArrayList<Vertex> findShortPathWithAStar() {
 		return null;
 	}
 	
-	public Iterator vertices() {
-		return vertices.iterator();
+	public ArrayList<Vertex> vertices() {
+		return vertices;
 	}
 	
-	public Iterator edges() {
+	public ArrayList<Edge> edges() {
 		ArrayList<Edge> edges = new ArrayList();
 		
 		for (int i = 0; i < vertexCount; ++i)
 			for (int j = 0; j < vertexCount; ++j)
 				edges.add(adjMatrix[i][j]);
 		
-		return edges.iterator();
+		return edges;
 	}
 	/** Graph state methods -- END */
 	

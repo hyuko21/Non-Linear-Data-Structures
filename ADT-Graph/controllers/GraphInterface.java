@@ -1,6 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * made with ♥ by hyuko21
@@ -33,9 +32,9 @@ public interface GraphInterface {
 	
 	public abstract int order();
 	
-	public abstract Iterator incidentEdges(Vertex v);
+	public abstract ArrayList<Edge> incidentEdges(Vertex v);
 	
-	public abstract Iterator endVertices(Edge e);
+	public abstract ArrayList<Vertex> endVertices(Edge e);
 	
 	public abstract Vertex opposite(Vertex v, Edge e) throws OppositeException;
 	
@@ -43,8 +42,8 @@ public interface GraphInterface {
 	
 	
 	/** Graph global info methods */
-	public abstract Iterator vertices();
+	public abstract ArrayList<Vertex> vertices();
 	
-	public abstract Iterator edges();
+	public abstract ArrayList<Edge> edges();
 	
 }

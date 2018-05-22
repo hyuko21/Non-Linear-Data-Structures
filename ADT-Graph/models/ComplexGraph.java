@@ -1,6 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * made with ♥ by hyuko21
@@ -179,7 +178,7 @@ public class ComplexGraph implements GraphInterface {
 		return vertexCount;
 	}
 	
-	public Iterator incidentEdges(Vertex v) {
+	public ArrayList<Edge> incidentEdges(Vertex v) {
 		ArrayList<Edge> edges = new ArrayList();
 		int index = vertices.indexOf(v);
 		
@@ -187,14 +186,14 @@ public class ComplexGraph implements GraphInterface {
 		for (; i < vertexCount; i += (i + 1 == index ? 2 : 1))
 			if (adjMatrix[i][index] != null) for (Edge e: adjMatrix[i][index]) edges.add(e);
 		
-		return edges.iterator();
+		return edges;
 	}
 	
-	public Iterator endVertices(Edge e) {
+	public ArrayList<Vertex> endVertices(Edge e) {
 		ArrayList<Vertex> vertices = new ArrayList();
 		vertices.add(e.getV1());
 		vertices.add(e.getV2());
-		return vertices.iterator();
+		return vertices;
 	}
 	
 	public Vertex opposite(Vertex v, Edge e) throws OppositeException {
@@ -210,26 +209,26 @@ public class ComplexGraph implements GraphInterface {
 		return adjMatrix[i][j] != null;
 	}
 	
-	public Iterator getEdge(Vertex v1, Vertex v2) {
+	public ArrayList<Edge> getEdge(Vertex v1, Vertex v2) {
 		int i = vertices.indexOf(v1);
 		int j = vertices.indexOf(v2);
-		return adjMatrix[i][j].iterator();
+		return adjMatrix[i][j];
 	}
 	/** Graph state methods -- END */
 	
 	/** Graph global info methods -- BEGIN */
-	public Iterator vertices() {
-		return vertices.iterator();
+	public ArrayList<Vertex> vertices() {
+		return vertices;
 	}
 	
-	public Iterator edges() {
+	public ArrayList<Edge> edges() {
 		ArrayList<Edge> edges = new ArrayList();
 		
 		for (int i = 0; i < vertexCount; ++i)
 			for (int j = 0; i < vertexCount; ++j)
 				if (adjMatrix[i][j] != null) for (Edge e: adjMatrix[i][j]) edges.add(e);
 		
-		return edges.iterator();
+		return edges;
 	}
 	/** Graph state methods -- END */
 	
