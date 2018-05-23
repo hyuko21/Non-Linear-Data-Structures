@@ -39,8 +39,7 @@ public interface GraphInterface {
 	public abstract Vertex opposite(Vertex v, Edge e) throws OppositeException;
 	
 	public abstract boolean areAdjacent(Vertex v1, Vertex v2);
-	
-	
+
 	/** Graph global info methods */
 	public abstract ArrayList<Vertex> vertices();
 	

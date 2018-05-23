@@ -114,6 +114,8 @@ public class Maze {
 		}
 	}
 
+	// remove the walls, as long as we already have the connections
+	// between the vertices that realy matter
 	private void cleanUp() {
 		Vertex v;
 		for (int i = 0; i < vertices.size(); ++i) {
@@ -125,6 +127,7 @@ public class Maze {
 		}
 	}
 
+	// print how the maze looks like
 	public void vertices() {
 		Vertex v;
 		int c = 0, size = vertices.size(), max = rows * cols;
@@ -140,6 +143,7 @@ public class Maze {
 		}
 	}
 
+	// find the possibilities to link (build an edge) from a vertex to another
 	private ArrayList<Vertex> findLinkablePaths(Vertex v) {
 		int refPos = vertices.indexOf(v); // reference position to look up around
 		int top = refPos - cols; // vertex at the top of v
@@ -176,20 +180,29 @@ public class Maze {
 		return verticesToLink;
 	}
 
-	public ArrayList<Vertex>[] findShortPath() {
-		ArrayList<Vertex> paths[] = graph.findShortPathWithDijkstra(playerPos, exitVertices);
+	public ArrayList<Vertex>[] findShortestPath() {
+		ArrayList<Vertex> paths[] = new DijkstraAlgorithm(graph).findShortestPath(playerPos, exitVertices);
+
+		int pathLength;
+		Vertex v0, v1, end;
 
 		for (int i = 0; i < paths.length; ++i) {
-			if (!graph.areAdjacent(paths[i].get(0), paths[i].get(1)))
-				System.out.format("\npath %d: PATH NOT FOUND\n", i);
+			pathLength = paths[i].size() - 1;
+			v0 = paths[i].get(0);
+			v1 = paths[i].get(1);
+			end = paths[i].get(pathLength);
+
+			if (!graph.areAdjacent(v0, v1))
+				System.out.format("\npath { %s, %s }: PATH NOT FOUND\n", v0, end);
 			else {
-				System.out.format("\npath %d (cost: %d): %s\n", i, paths[i].size() - 1, paths[i]);
+				System.out.format("\npath { %s, %s } (cost: %d): %s\n", v0, end, pathLength, paths[i]);
 			}
 		}
 
 		return paths;
 	}
 
+	// print the adjacency matrix of this graph
 	public void showMatrix() {
 		graph.showMatrix();
 	}
