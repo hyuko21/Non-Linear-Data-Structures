@@ -189,6 +189,21 @@ public class SimpleGraph implements GraphInterface {
 		int j = vertices.indexOf(v2);
 		return adjMatrix[i][j];
 	}
+
+	public ArrayList<Vertex> adjacentVertices(Vertex v) {
+		ArrayList<Vertex> adjVertices = new ArrayList();
+		int index = vertices.indexOf(v);
+		
+		Vertex w;
+		int j = (index == 0 ? 1 : 0);
+		for (; j < vertexCount; j += (j + 1 == index ? 2 : 1))
+			if (adjMatrix[index][j] != null) {
+				w = opposite(v, adjMatrix[index][j]);
+				adjVertices.add(w);
+			}
+
+		return adjVertices;
+	}
 	/** Graph state methods -- END */
 	
 	/** Graph global info methods -- BEGIN */
