@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * made with ♥ by hyuko21
@@ -115,7 +116,7 @@ public class Maze {
 	}
 
 	// remove the walls, as long as we already have the connections
-	// between the vertices that realy matter
+	// between the vertices that really matter
 	private void cleanUp() {
 		Vertex v;
 		for (int i = 0; i < vertices.size(); ++i) {
@@ -181,25 +182,52 @@ public class Maze {
 	}
 
 	public ArrayList<Vertex>[] findShortestPath() {
-		ArrayList<Vertex> paths[] = new DijkstraAlgorithm(graph).findShortestPath(playerPos, exitVertices);
+		// ArrayList<Vertex> paths[] = new DijkstraAlgorithm(graph).findShortestPath(playerPos, exitVertices);
 
-		int pathLength;
-		Vertex v0, v1, end;
+		// int pathLength;
+		// Vertex v0, v1, end;
 
-		for (int i = 0; i < paths.length; ++i) {
-			pathLength = paths[i].size() - 1;
-			v0 = paths[i].get(0);
-			v1 = paths[i].get(1);
-			end = paths[i].get(pathLength);
+		// for (int i = 0; i < paths.length; ++i) {
+		// 	pathLength = paths[i].size() - 1;
+		// 	v0 = paths[i].get(0);
+		// 	v1 = paths[i].get(1);
+		// 	end = paths[i].get(pathLength);
 
-			if (!graph.areAdjacent(v0, v1))
-				System.out.format("\npath { %s, %s }: PATH NOT FOUND\n", v0, end);
-			else {
-				System.out.format("\npath { %s, %s } (cost: %d): %s\n", v0, end, pathLength, paths[i]);
-			}
-		}
+		// 	if (!graph.areAdjacent(v0, v1))
+		// 		System.out.format("\npath { %s, %s }: PATH NOT FOUND\n", v0, end);
+		// 	else
+		// 		System.out.format("\npath { %s, %s } (cost: %d): %s\n", v0, end, pathLength, paths[i]);
+		// }
 
-		return paths;
+		// return paths;
+		new DijkstraAlgorithm(graph).findShortestPath(playerPos, exitVertices);
+		return null;
+	}
+
+	public LinkedList<Vertex>[] findShortestPathAStar() {
+		// LinkedList<Vertex> paths[] = new LinkedList[exitVertices.size()];
+		// for (int i = 0; i < exitVertices.size(); ++i)
+		// 	paths[i] = new AStarAlgorithm(graph, rows, cols).findShortestPath(playerPos, exitVertices.get(i));
+		
+		// int pathLength;
+		// Vertex v0, end;
+
+		// for (int i = 0; i < paths.length; ++i) {
+		// 	pathLength = paths[i].size() - 1;
+
+		// 	if (pathLength < 0) // no path has been found
+		// 		System.out.format("\npath { %s, %s }: PATH NOT FOUND\n", playerPos, exitVertices.get(i));
+		// 	else {
+		// 		v0 = paths[i].get(0);
+		// 		end = paths[i].get(pathLength);
+		// 		System.out.format("\npath { %s, %s } (cost: %d): %s\n", v0, end, pathLength, paths[i]);
+		// 	}
+		// }
+
+		// return paths;
+		for (Vertex exitVertex: exitVertices)
+			new AStarAlgorithm(graph, rows, cols).findShortestPath(playerPos, exitVertices.get(0));
+		return null;
 	}
 
 	// print the adjacency matrix of this graph

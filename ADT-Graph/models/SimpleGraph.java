@@ -207,10 +207,6 @@ public class SimpleGraph implements GraphInterface {
 	/** Graph state methods -- END */
 	
 	/** Graph global info methods -- BEGIN */
-	public ArrayList<Vertex> findShortPathWithAStar() {
-		return null;
-	}
-	
 	public ArrayList<Vertex> vertices() {
 		return vertices;
 	}
