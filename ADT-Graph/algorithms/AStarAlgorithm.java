@@ -10,11 +10,10 @@ import java.util.LinkedList;
 public class AStarAlgorithm {
 
 	private SimpleGraph graph;
-	private int rows, cols;
+	private int cols;
 
-	public AStarAlgorithm(SimpleGraph graph, int rows, int cols) {
+	public AStarAlgorithm(SimpleGraph graph, int cols) {
 		this.graph = graph;
-		this.rows = rows;
 		this.cols = cols;
 	}
 
@@ -100,7 +99,7 @@ public class AStarAlgorithm {
 			closedList.add(q);
 		}
 		closedList.add(destiny);
-
+		
 		// if the last vertex isn't adjacent to the vertex next to it
 		// no path has been found
 		if (!graph.areAdjacent(destiny, closedList.get(closedList.size() - 2))) {

@@ -1,6 +1,7 @@
 
 import java.util.Collections;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * made with ♥ by hyuko21
@@ -43,7 +44,7 @@ public class DijkstraAlgorithm {
 	}
 
 	// returns the shortest path from a source to others vertices (smallest sum of edge(s) value(s))
-	public ArrayList<Vertex>[] findShortestPath(Vertex v0, ArrayList<Vertex> destinies) {
+	public LinkedList<Vertex>[] findShortestPath(Vertex v0, ArrayList<Vertex> destinies) {
 		ArrayList<Vertex> vertices = graph.vertices(); // gets the vertices array of this graph
 
 		int vertexCount = vertices.size(); // gets the number of vertices of this graph
@@ -118,30 +119,40 @@ public class DijkstraAlgorithm {
 			// }
 		}
 
-		ArrayList<Vertex> paths[] = new ArrayList[destinies.size()]; // to store the shortest paths found and its respective costs
-		ArrayList<Vertex> shortestPath; // queue to store the shortest path finded at the end of this algorithm. it will be returned from this method
-		Edge distance; // to store the current distance being evaluated
-		Vertex predecessor; // to store the current predecessor that is being searched
+		
+
+		LinkedList<Vertex> paths[] = new LinkedList[destinies.size()]; // to store the shortest paths found and its respective costs
+		LinkedList<Vertex> shortestPath = null; // queue to store the shortest path finded at the end of this algorithm. it will be returned from this method
+		Edge distance = null; // to store the current distance being evaluated
+		Vertex successor = null; // to store the current successor that is being searched
 
 		// retrieving the shortest(s) path(s) after algorithm ran
 		// getting the end points desired in destiny array
 		for (int i = 0; i < destinies.size(); ++i) {
-			shortestPath = new ArrayList(); // initialize/reset shortestPath array (to find another, if multiple end points was passed)
-			predecessor = destinies.get(i); // gets the first end point
+			shortestPath = new LinkedList(); // initialize/reset shortestPath array (to find another, if multiple end points was passed)
+			successor = destinies.get(i); // gets the first end point
 			// go through all the values in distances matrix to build the array with the shortest path
 			for (int j = vertexCount - 1; j >= 0; --j) {
 				for (int k = vertexCount - 1; k >= 0; --k) {
 					distance = distances[j][k];
-					if (distance != null && (distance.getV2() == predecessor)) { // save it in the shortest path array, only if it is not null (obvious) and either array is empty or this is the predecessor we are looking for
-						// System.out.println(distance.getV1() + " " + distance.getV2());
-						shortestPath.add(0, predecessor);
-						predecessor = distance.getV1(); // updates the predecessor vertex
+					if (distance != null && distance.getValue() != Double.MAX_VALUE && (distance.getV2() == successor)) { // save it in the shortest path array, only if it is not null (obvious) and this is the successor we are looking for
+						shortestPath.addFirst(successor);
+						successor = distance.getV1(); // updates the successor vertex
 						break;
 					}
 				}
 			}
 
-			if (!shortestPath.contains(v0)) shortestPath.add(0, v0); // add the start position (v0) to the found path, if it wasn't yet
+			// fixing the problem with the successor of v0
+			// successor of v0 wasn't the expected one
+			// so, the few lines below will solve it
+			// if successor is not in the shortest path array
+			// and this successor it is adjacent of v0 
+			// it is happen because distance.getV2() are not who it supposed to be
+			if (!shortestPath.contains(successor) && graph.areAdjacent(successor, v0))
+				shortestPath.addFirst(successor);
+
+			if (!shortestPath.contains(v0)) shortestPath.addFirst(v0); // add the start position (v0) to the found path, if it wasn't yet
 
 			paths[i] = shortestPath; // setting the path found
 		}

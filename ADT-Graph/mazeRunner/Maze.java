@@ -15,33 +15,33 @@ import java.util.LinkedList;
 public class Maze {
 	private SimpleGraph graph;
 	private int rows, cols;
-	private Vertex playerPos;
+	private ArrayList<Vertex> startVertices;
 	private ArrayList<Vertex> exitVertices;
 	private ArrayList<Vertex> vertices;
 
 	String fileName = "maze_model.dat";
 
-	public Maze(String fileName, int rows, int cols) {
+	public Maze(String fileName) {
 		graph = new SimpleGraph();
+		startVertices = new ArrayList();
 		exitVertices = new ArrayList();
 
 		String path = System.getProperty("user.dir") + "/mazeRunner/" + fileName;
-		this.rows = rows;
-		this.cols = cols;
-		
+		this.rows = 0;
+
 		matrixify(path);
 		vertices = graph.vertices();
 		buildEdges();
 		cleanUp();
 	}
 
-	public Maze(int rows, int cols) {
+	public Maze() {
 		graph = new SimpleGraph();
+		startVertices = new ArrayList();
 		exitVertices = new ArrayList();
 
 		String path = System.getProperty("user.dir") + "/mazeRunner/" + fileName;
-		this.rows = rows;
-		this.cols = cols;
+		this.rows = 0;
 
 		matrixify(path);
 		vertices = graph.vertices();
@@ -58,8 +58,9 @@ public class Maze {
 
 			int vCount = 1; // vertices count in matrix
 			while((line = br.readLine()) != null) {
-				for (int x = 0; x < line.length(); ++x) {
-					switch (line.charAt(x)) {
+				this.rows++;
+				for (this.cols = 0; this.cols < line.length(); ++this.cols) {
+					switch (line.charAt(this.cols)) {
 						case '0': // it is a path
 							// creating a new vertex to this position
 							graph.insertVertex(new Vertex(vCount++, 0));
@@ -71,11 +72,11 @@ public class Maze {
 
 						case '2': // it is the player position
 							// creating a new vertex to this position
-							Vertex playerPos = new Vertex(vCount++, 2);
+							Vertex startVertex = new Vertex(vCount++, 2);
 							// inserting it into the graph
-							graph.insertVertex(playerPos);
+							graph.insertVertex(startVertex);
 							// setting player position to this vertex
-							this.playerPos = playerPos;
+							startVertices.add(startVertex);
 							break;
 
 						default: // it is a exit point
@@ -132,6 +133,8 @@ public class Maze {
 	public void vertices() {
 		Vertex v;
 		int c = 0, size = vertices.size(), max = rows * cols;
+		
+		System.out.println();
 		for (int i = 0; i < max; ++i) {
 			v = c < size ? vertices.get(c) : vertices.get(c - 1);
 			if ((i + 1) != v.getKey()) System.out.print("[  ]\t");
@@ -181,53 +184,50 @@ public class Maze {
 		return verticesToLink;
 	}
 
-	public ArrayList<Vertex>[] findShortestPath() {
-		// ArrayList<Vertex> paths[] = new DijkstraAlgorithm(graph).findShortestPath(playerPos, exitVertices);
+	public LinkedList<Vertex>[] findShortestPath(String algorithm) {
+		LinkedList<Vertex> paths[] = null;
+		switch (algorithm) {
+			case "dijkstra":
+				for (int i = 0; i < startVertices.size(); ++i) {
+					paths = new DijkstraAlgorithm(graph).findShortestPath(startVertices.get(i), exitVertices);
+					showPath(startVertices.get(i), paths);
+				}
+				break;
+			case "astar":
+				for (int i = 0; i < startVertices.size(); ++i) {
+					paths = new LinkedList[exitVertices.size()];
+					for (int j = 0; j < exitVertices.size(); ++j)
+						paths[j] = new AStarAlgorithm(graph, cols).findShortestPath(startVertices.get(i), exitVertices.get(j));
+					showPath(startVertices.get(i), paths);
+				}
+				break;
+			default:
+				System.out.format("\nfind shortest path: invalid algorithm (%s)\n", algorithm);
+				return paths;
+		}
 
-		// int pathLength;
-		// Vertex v0, v1, end;
-
-		// for (int i = 0; i < paths.length; ++i) {
-		// 	pathLength = paths[i].size() - 1;
-		// 	v0 = paths[i].get(0);
-		// 	v1 = paths[i].get(1);
-		// 	end = paths[i].get(pathLength);
-
-		// 	if (!graph.areAdjacent(v0, v1))
-		// 		System.out.format("\npath { %s, %s }: PATH NOT FOUND\n", v0, end);
-		// 	else
-		// 		System.out.format("\npath { %s, %s } (cost: %d): %s\n", v0, end, pathLength, paths[i]);
-		// }
-
-		// return paths;
-		new DijkstraAlgorithm(graph).findShortestPath(playerPos, exitVertices);
-		return null;
+		return paths;
+		// new DijkstraAlgorithm(graph).findShortestPath(playerPos, exitVertices);
+		// for (Vertex exitVertex: exitVertices)
+		// 	new AStarAlgorithm(graph, cols).findShortestPath(playerPos, exitVertices.get(0));
+		// return null;
 	}
 
-	public LinkedList<Vertex>[] findShortestPathAStar() {
-		// LinkedList<Vertex> paths[] = new LinkedList[exitVertices.size()];
-		// for (int i = 0; i < exitVertices.size(); ++i)
-		// 	paths[i] = new AStarAlgorithm(graph, rows, cols).findShortestPath(playerPos, exitVertices.get(i));
-		
-		// int pathLength;
-		// Vertex v0, end;
+	public void showPath(Vertex startVertex, LinkedList<Vertex> paths[]) {
+		int pathLength;
+		Vertex v0, end;
 
-		// for (int i = 0; i < paths.length; ++i) {
-		// 	pathLength = paths[i].size() - 1;
+		for (int i = 0; i < paths.length; ++i) {
+			pathLength = paths[i].size() - 1;
 
-		// 	if (pathLength < 0) // no path has been found
-		// 		System.out.format("\npath { %s, %s }: PATH NOT FOUND\n", playerPos, exitVertices.get(i));
-		// 	else {
-		// 		v0 = paths[i].get(0);
-		// 		end = paths[i].get(pathLength);
-		// 		System.out.format("\npath { %s, %s } (cost: %d): %s\n", v0, end, pathLength, paths[i]);
-		// 	}
-		// }
-
-		// return paths;
-		for (Vertex exitVertex: exitVertices)
-			new AStarAlgorithm(graph, rows, cols).findShortestPath(playerPos, exitVertices.get(0));
-		return null;
+			if (pathLength <= 0) // no path has been found
+				System.out.format("\npath { %s, %s }: PATH NOT FOUND\n", startVertex, exitVertices.get(i));
+			else {
+				v0 = paths[i].get(0);
+				end = paths[i].get(pathLength);
+				System.out.format("\npath { %s, %s } (cost: %d): %s\n", v0, end, pathLength, paths[i]);
+			}
+		}
 	}
 
 	// print the adjacency matrix of this graph

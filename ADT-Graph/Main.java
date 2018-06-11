@@ -72,33 +72,34 @@ class Main {
 		  /********************************/
 		 /** FIND SHOTHEST PATH (MAZE) ***/
 		/********************************/
-		Maze mazeRunner = new Maze(12, 10);
-		// mazeRunner.vertices();
-		// mazeRunner.findShortestPath();
-		// mazeRunner.findShortestPathAStar();
+		Maze mazeRunner = new Maze();
+		mazeRunner.vertices();
+		// mazeRunner.findShortestPath("dijkstra");
+		mazeRunner.findShortestPath("astar");
 
 
 			/*********************************/
 		 /** SPEED TEST - DIJKSTRA vs A* **/
 		/*********************************/
-		int djPoint = 0, aSPoint = 0;
-		long startTime, endTime, elapsedTimeDijkstra, elapsedTimeAStar;
-		for (int i = 0; i < 100; ++i) {
-			startTime = System.currentTimeMillis();
-			mazeRunner.findShortestPath();
-			endTime = System.currentTimeMillis();
-			elapsedTimeDijkstra = endTime - startTime;
+		// int djPoint = 0, aSPoint = 0;
+		// long startTime, endTime, elapsedTimeDijkstra, elapsedTimeAStar;
+		// for (int i = 0; i < 100; ++i) {
+		// 	startTime = System.currentTimeMillis();
+		// 	mazeRunner.findShortestPath();
+		// 	endTime = System.currentTimeMillis();
+		// 	elapsedTimeDijkstra = endTime - startTime;
 
-			startTime = System.currentTimeMillis();
-			mazeRunner.findShortestPathAStar();
-			endTime = System.currentTimeMillis();
-			elapsedTimeAStar = endTime - startTime;
+		// 	startTime = System.currentTimeMillis();
+		// 	mazeRunner.findShortestPathAStar();
+		// 	endTime = System.currentTimeMillis();
+		// 	elapsedTimeAStar = endTime - startTime;
 
-			if (elapsedTimeAStar < elapsedTimeDijkstra) aSPoint++;
-			else if (elapsedTimeDijkstra < elapsedTimeAStar) djPoint++;
-		}
+		// 	if (elapsedTimeAStar < elapsedTimeDijkstra) aSPoint++;
+		// 	else if (elapsedTimeDijkstra < elapsedTimeAStar) djPoint++;
+		// 	// System.out.println(elapsedTimeAStar + " " + elapsedTimeDijkstra);
+		// }
 
-		System.out.format("\nDijkstra Algorithm win: %d\nA* Algorithm win: %d", djPoint, aSPoint);
+		// System.out.format("\nDijkstra Algorithm win: %d\nA* Algorithm win: %d", djPoint, aSPoint);
 
 		//\'''''''''''''''''//\
 		 //\'' CONCLUSIONS ''//\
